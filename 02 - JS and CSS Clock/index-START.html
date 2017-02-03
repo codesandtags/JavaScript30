@@ -1,73 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>JS + CSS Clock</title>
+    <meta charset="UTF-8">
+    <title>JS + CSS Clock</title>
 </head>
 <body>
 
+<h1>What time is it?</h1>
 
-    <div class="clock">
-      <div class="clock-face">
+<div class="clock">
+    <div class="clock-face">
         <div class="hand hour-hand"></div>
         <div class="hand min-hand"></div>
         <div class="hand second-hand"></div>
-      </div>
     </div>
+</div>
 
+<div class="digital-clock">
+    <div class="digital hour"></div>
+    <div class="digital separator">:</div>
+    <div class="digital minute"></div>
+    <div class="digital separator">:</div>
+    <div class="digital second"></div>
+</div>
 
-  <style>
+<audio src="tick.mp3" class="tick"></audio>
+
+<style>
     html {
-      background:#018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
-      background-size:cover;
-      font-family:'helvetica neue';
-      text-align: center;
-      font-size: 10px;
+        background: #018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
+        background-size: cover;
+        font-family: 'helvetica neue';
+        text-align: center;
+        font-size: 10px;
     }
 
     body {
-      font-size: 2rem;
-      display:flex;
-      flex:1;
-      min-height: 100vh;
-      align-items: center;
+        font-size: 2rem;
+        display: flex;
+        flex: 1;
+        min-height: 100vh;
+        align-items: center;
+        flex-direction: column;
     }
 
     .clock {
-      width: 30rem;
-      height: 30rem;
-      border:20px solid white;
-      border-radius:50%;
-      margin:50px auto;
-      position: relative;
-      padding:2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
+        width: 30rem;
+        height: 30rem;
+        border: 20px solid white;
+        border-radius: 50%;
+        margin: 50px auto;
+        position: relative;
+        padding: 2rem;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1),
         inset 0 0 0 3px #EFEFEF,
         inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
+        0 0 10px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, .5);
     }
 
     .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform: translateY(-3px); /* account for the height of the clock hands */
+        background: rgba(255, 255, 255, .5);
+        border-radius: 50%;
     }
 
     .hand {
-      width:50%;
-      height:6px;
-      background:black;
-      position: absolute;
-      top:50%;
+        width: 50%;
+        height: 6px;
+        background: black;
+        position: absolute;
+        top: 50%;
+        transform-origin: 100%;
+        transition: all 0.05s;
+        transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
     }
 
-  </style>
+    .hour-hand {
+        background: darkcyan;
+        width: 41%;
+        transform-origin: 120%;
+    }
 
-  <script>
+    .second-hand {
+        background: red;
+    }
 
+    .digital-clock {
+        display: flex;
+        flex: 1;
+        width: 25em;
+        padding: 0;
+    }
 
-  </script>
+    .digital, .separator {
+        font-size: 5em;
+        font-family: "Courier New";
+        text-shadow: 1px 1px rgba(0, 0, 0, .7);
+        color: white;
+        flex: 2;
+    }
+
+    .separator {
+        flex: 1;
+    }
+
+    h1 {
+        color:white;
+        text-shadow: 2px 2px rgba(0, 0, 0, .4);
+    }
+
+</style>
+
+<script>
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
+    const second = document.querySelector('.second');
+    const minute = document.querySelector('.minute');
+    const hour = document.querySelector('.hour');
+    const tick = document.querySelector('.tick');
+
+    function setDate() {
+        const now = new Date();
+        const seconds = now.getSeconds();
+        const minutes = now.getMinutes();
+        const hours = now.getHours();
+        const secondsDegree = ((seconds / 60) * 360) + 90; // value in degrees
+        const minutesDegree = ((minutes / 60) * 360) + 90; // value in degrees
+        const hoursDegree = ((hours / 12) * 360) + 90; // value in degrees
+
+        // apply motion
+        tick.play();
+
+        secondHand.style.transform = `rotate(${secondsDegree}deg)`;
+        minuteHand.style.transform = `rotate(${minutesDegree}deg)`;
+        hourHand.style.transform = `rotate(${hoursDegree}deg) translateX(25px)`;
+
+        second.innerHTML = (seconds < 10) ? `0${seconds}` : seconds;
+        minute.innerHTML = (minutes < 10) ? `0${minutes}` : minutes;
+        hour.innerHTML = (hours < 10) ? `0${hours}` : hours;
+    }
+
+    setInterval(setDate, 1000);
+
+</script>
 </body>
 </html>
