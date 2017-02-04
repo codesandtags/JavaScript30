@@ -8,7 +8,7 @@
 <body>
 
 <form class="search-form">
-    <input type="text" class="search" placeholder="City or State" autofocus>
+    <input type="text" class="search" placeholder="Country or Capital" autofocus>
     <ul class="suggestions">
         <li>Filter for a city</li>
         <li>or a state</li>
@@ -16,11 +16,13 @@
 </form>
 <script>
     const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    const countriesEndpoint = 'https://restcountries.eu/rest/v1/all';
     const search = document.querySelector('.search');
     const suggestions = document.querySelector('.suggestions');
     const cities = [];
+    const countries = [];
 
-    function displayMatches() {
+    function displayMatchesUSA() {
         const matches = findMatches(this.value, cities);
         const html = matches.map((place) => {
             const regex = new RegExp(this.value, 'gi');
@@ -50,6 +52,32 @@
         });
     }
 
+    function displayMatchesWorld() {
+        const matches = findMatchesWorld(this.value, countries);
+        const html = matches.map((place) => {
+            const regex = new RegExp(this.value, 'gi');
+            const countryName = place.name.replace(regex, `<span class="hl">${this.value}</span>`);
+            const capitalName = place.capital.replace(regex, `<span class="hl">${this.value}</span>`);
+
+            return `
+                <li>
+                    <span class="name">${countryName}, ${capitalName}</span>
+                    <span class="population">${numberWithCommas(place.population)}</span>
+                </li>
+                `;
+        });
+        suggestions.innerHTML = html.join('');
+        addListenerToList();
+    }
+
+    function findMatchesWorld(wordToMatch, countries) {
+        if (wordToMatch.length <= 1) return [];
+        return countries.filter(place => {
+            const regex = new RegExp(wordToMatch, 'gi');
+            return place.name.match(regex) || place.capital.match(regex);
+        });
+    }
+
     function addListenerToList() {
         const places = document.querySelectorAll('li');
         places.forEach((place) => place.addEventListener('click', selectPlace))
@@ -57,15 +85,21 @@
 
     function selectPlace() {
         const place = this.querySelector('span.name').textContent;
+        [country, capital] = place.split(',');
         console.log(`Place selected : ${place}`);
+        window.open(`https://en.wikipedia.org/wiki/${country}`)
     }
 
     // Add listener to search
-    search.addEventListener('keyup', displayMatches);
+    search.addEventListener('keyup', displayMatchesWorld);
 
     fetch(endpoint)
         .then((blob) => blob.json())
         .then((data) => cities.push(...data));
+
+    fetch(countriesEndpoint)
+        .then((blob) => blob.json())
+        .then((data) => countries.push(...data));
 
 </script>
 </body>
