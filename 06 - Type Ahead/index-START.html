@@ -58,9 +58,11 @@
             const regex = new RegExp(this.value, 'gi');
             const countryName = place.name.replace(regex, `<span class="hl">${this.value}</span>`);
             const capitalName = place.capital.replace(regex, `<span class="hl">${this.value}</span>`);
+            const flagUrl = `http://flags.fmcdn.net/data/flags/small/${place.alpha2Code.toLowerCase()}.png`;
 
             return `
                 <li>
+                    <span class="flag"><img src="${flagUrl}" alt="${place.name}" class="flag"></span>
                     <span class="name">${countryName}, ${capitalName}</span>
                     <span class="population">${numberWithCommas(place.population)}</span>
                 </li>
