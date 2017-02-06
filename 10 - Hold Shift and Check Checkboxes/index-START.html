@@ -55,6 +55,20 @@
         font-size: 15px;
     }
 
+    video {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -100;
+        transform: translateX(-50%) translateY(-50%);
+        background: url('//demosthenes.info/assets/images/polina.jpg') no-repeat;
+        background-size: cover;
+        transition: 1s opacity;
+    }
 
 </style>
 <!--
@@ -102,14 +116,24 @@ When a user clicks a checkbox, holds Shift, and then clicks another checkbox a f
     </div>
 </div>
 
+<video src="octagon.mp4" playsinline autoplay muted loop></video>
+<audio src="click.mp3"></audio>
+
 <script>
     const tasks = document.querySelectorAll('.inbox input[type="checkbox"]');
+    const audio = document.querySelector('audio');
+
     tasks.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
 
     let lastChecked;
 
     function handleCheck(e) {
         let inBetween = false;
+
+        if (audio) {
+            audio.play();
+            audio.currentTime = 0;
+        }
 
         if (e.shiftKey && this.checked) {
             tasks.forEach(checkbox => {
