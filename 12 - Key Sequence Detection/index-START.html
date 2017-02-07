@@ -1,12 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Key Detection</title>
-  <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+    <meta charset="UTF-8">
+    <title>Key Detection</title>
+    <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+    <style>
+        body {
+            background: url(https://images.unsplash.com/photo-1458724338480-79bc7a8352e4?dpr=2&auto=format&fit=crop&w=767&h=511&q=80&cs=tinysrgb&crop=) center no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 50px;
+            color: white;
+            text-shadow: 2px 2px 1px #777;
+        }
+    </style>
+
 </head>
 <body>
+
+<h1>Hey! please find the secret code and see awesome things!</h1>
+
+<audio src="cartoon.mp3" class="cartoon"></audio>
+<audio src="music.mp3" class="music"></audio>
 <script>
+    const secretCode = 'cocoman';
+    const pressed = [];
+    const audio = document.querySelector('.cartoon');
+    const music = document.querySelector('.music');
+
+    window.addEventListener('keyup', (e) => {
+        pressed.push(e.key);
+
+        pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length);
+        if (pressed.join('').includes(secretCode)) {
+            if (audio && music) {
+                audio.play();
+                music.play();
+                audio.currentTime = 0;
+            }
+            console.log('DING DING!');
+            cornify_add();
+        }
+        console.log(pressed);
+    });
 </script>
 </body>
 </html>
